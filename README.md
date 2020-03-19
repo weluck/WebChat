@@ -34,17 +34,3 @@ list是当前在线的用户名的列表,只在后台触发onopen和onclose时�
 
 ## 三.实现功能
 用户登录注册注销,用户信息展示,用户信息修改,用户头像修改,修改密码,在线聊天,在线列表展示,好友资料卡,日志记录展示，聊天记录查看下载删除，好友印象管理，添加删除好友发送验证消息，迷你资料卡，添加删除修改好友印象。
-
-## 五.GIT Commit 规范
-#### type
-* type is used to explain the category of commit,only contain :
- * `feat`:feature
- * `fix`:repair bug
- * docs:documentation
- * `style`:style (no code change)
- * `refactor`:restructure
- * `test`:increase the test
- * `chore`:change in the construction or anxiliary tools
-* if type is feat or fix,and this commit must be in Change log.the others are recommended not to increase.
-* 例子：fix:repairing the bug of Mini Data Card
-
