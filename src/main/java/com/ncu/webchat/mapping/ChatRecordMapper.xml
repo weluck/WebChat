@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ncu.webchat.dao.ChatRecordDao">
+
+    <select id="searchChatRecord" resultType="com.ncu.webchat.pojo.ChatRecord">
+        select * from webchat.chatrecord where firstperson = #{firstperson} and secondperson = #{secondperson}
+    </select>
+
+    <insert id="insertChatRecordByid">
+        INSERT INTO webchat.chatrecord (firstperson , secondperson, content , state , time)
+    VALUES (#{firstperson},#{secondperson},#{content},#{state},#{time})
+    </insert>
+
+<delete id="deleteChatRecordByid" >
+    DELETE FROM webchat.chatrecord
+    WHERE firstperson = #{0, jdbcType=VARCHAR} and secondperson = #{1, jdbcType=VARCHAR}
+</delete>
+
+    <delete id="deleteChatRecordByFirstPerson">
+        DELETE FROM webchat.chatrecord
+    WHERE firstperson = #{firstperson, jdbcType=VARCHAR}
+    </delete>
+
+    <delete id="deleteChatRecordBySecondPerson">
+        DELETE FROM webchat.chatrecord
+    WHERE secondperson = #{secondperson, jdbcType=VARCHAR}
+    </delete>
+</mapper>

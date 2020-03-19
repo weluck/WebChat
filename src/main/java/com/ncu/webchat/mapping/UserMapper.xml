@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ncu.webchat.dao.IUserDao">
+
+  <resultMap id="BaseResultMap" type="com.ncu.webchat.pojo.User">
+    <id column="USERID" property="userid" jdbcType="VARCHAR"/>
+    <result column="PASSWORD" property="password" jdbcType="VARCHAR"/>
+    <result column="NICKNAME" property="nickname" jdbcType="VARCHAR"/>
+    <result column="SEX" property="sex" jdbcType="INTEGER"/>
+    <result column="AGE" property="age" jdbcType="INTEGER"/>
+    <result column="PROFILEHEAD" property="profilehead" jdbcType="VARCHAR"/>
+    <result column="PROFILE" property="profile" jdbcType="VARCHAR"/>
+    <result column="FIRSTTIME" property="firsttime" jdbcType="VARCHAR"/>
+    <result column="LASTTIME" property="lasttime" jdbcType="VARCHAR"/>
+    <result column="STATUS" property="status" jdbcType="INTEGER"/>
+    <result column="EMAIL" property="email" jdbcType="VARCHAR"/>
+    <result column="IMPRESSION" property="impression" jdbcType="VARCHAR"/>
+   </resultMap>
+
+  <sql id="Base_Column_List">
+    USERID, PASSWORD, NICKNAME, SEX, AGE, PROFILEHEAD, PROFILE, FIRSTTIME, LASTTIME, STATUS, EMAIL,IMPRESSION
+  </sql>
+
+  <!-- 查询所有用户 -->
+  <select id="selectAll" resultMap="BaseResultMap">
+      SELECT  USERID, PASSWORD, NICKNAME, SEX, AGE, PROFILEHEAD, PROFILE, FIRSTTIME, LASTTIME, STATUS, EMAIL FROM webchat.user
+      ORDER BY FIRSTTIME,impression
+      LIMIT #{offset}, #{limit}
+  </select>
+
+  <!-- 根据用户id查询所有好友 -->
+  <select id="selectAllFriend" resultType="String" parameterType="string">
+      SELECT  u.USERID FROM webchat.user u,webchat.friendlist f
+      WHERE u.userid = f.friendid AND f.userid = #{userid}
+      order by firsttime
+  </select>
+
+  <!-- 根据用户id查询用户 -->
+  <select id="selectUserByUserid" resultMap="BaseResultMap" parameterType="string">
+    SELECT *
+    FROM webchat.user
+    WHERE USERID = #{userid, jdbcType=VARCHAR}
+  </select>
+
+  <!-- 根据用户id模糊查询用户 -->
+  <select id="selectUsers" resultType="com.ncu.webchat.pojo.User" parameterType="string">
+    SELECT *
+    FROM webchat.user
+    WHERE USERID like concat('%', #{0}, '%') AND sex =  #{1}
+  </select>
+
+  <!-- 根据用户id查询用户数量 -->
+  <select id="selectCount" resultMap="BaseResultMap" >
+    SELECT COUNT(*) USERID
+    FROM webchat.user
+  </select>
+
+  <!-- 插入用户 -->
+  <insert id="insert" parameterType="com.ncu.webchat.pojo.User">
+    INSERT INTO webchat.user (USERID, PASSWORD, NICKNAME, SEX, AGE, PROFILEHEAD, PROFILE, FIRSTTIME, LASTTIME, STATUS, EMAIL,impression)
+    VALUES (#{userid, jdbcType=VARCHAR}, #{password, jdbcType=VARCHAR}, #{nickname, jdbcType=VARCHAR}, #{sex, jdbcType=INTEGER},
+    #{age, jdbcType=INTEGER}, #{profilehead, jdbcType=VARCHAR}, #{profile, jdbcType=VARCHAR},
+    #{firsttime, jdbcType=VARCHAR}, #{lasttime, jdbcType=VARCHAR}, #{status, jdbcType=INTEGER},
+    #{email, jdbcType=VARCHAR}, #{impression,jdbcType=VARCHAR}
+    )
+  </insert>
+
+  <!-- 插入朋友关系 -->
+  <insert id="insertFriend" parameterType="String">
+    INSERT INTO webchat.friendlist (userid,friendid)
+    VALUES (#{0, jdbcType=VARCHAR}, #{1, jdbcType=VARCHAR})
+  </insert>
+
+  <!-- 更新用户 -->
+  <update id="update" parameterType="com.ncu.webchat.pojo.User">
+    UPDATE webchat.user
+    <set>
+      <if test="password != null and password != ''">
+        PASSWORD = #{password, jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null and nickname != ''">
+        NICKNAME = #{nickname, jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null and sex != ''">
+        SEX = #{sex, jdbcType=INTEGER},
+      </if>
+      <if test="age != null and age != ''">
+        AGE = #{age, jdbcType=INTEGER},
+      </if>
+      <if test="profilehead != null and profilehead != ''">
+        PROFILEHEAD = #{profilehead, jdbcType=VARCHAR},
+      </if>
+      <if test="profile != null and profile != ''">
+        PROFILE = #{profile, jdbcType=VARCHAR},
+      </if>
+      <if test="firsttime != null and firsttime != ''">
+        FIRSTTIME = #{firsttime, jdbcType=VARCHAR},
+      </if>
+      <if test="lasttime != null and lasttime != ''">
+        LASTTIME = #{lasttime, jdbcType=VARCHAR},
+      </if>
+      <if test="status != null and status != ''">
+        STATUS = #{status, jdbcType=INTEGER},
+      </if>
+      <if test="email != null and email != ''">
+        EMAIL = #{email, jdbcType=VARCHAR},
+      </if>
+      <if test="impression!=null and impression !=''">
+        IMPRESSION=#{impression,jdbcType=VARCHAR},
+      </if>
+    </set>
+    WHERE USERID = #{userid, jdbcType=VARCHAR}
+  </update>
+
+  <!-- 删除用户 -->
+  <delete id="delete" parameterType="string">
+    DELETE FROM webchat.user
+    WHERE USERID = #{userid, jdbcType=VARCHAR}
+  </delete>
+
+  <!-- 删除朋友关系 -->
+  <delete id="deleteFriend" parameterType="String">
+    DELETE FROM webchat.friendlist
+    WHERE userid = #{0, jdbcType=VARCHAR} AND friendid = #{1, jdbcType=VARCHAR}
+  </delete>
+
+  <select id="selectsex" parameterType="String" resultType="java.lang.Long">
+    select count(*)
+    from webchat.user
+    where sex = #{0}
+  </select>
+  <select id="getProfileheadById" parameterType="String" resultType="String">
+    select profilehead
+    from webchat.user
+    where userid = #{userid}
+  </select>
+</mapper>
